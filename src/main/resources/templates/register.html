@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar Veículo - CarForMe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .bg-gradient-dark {
+        background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans antialiased min-h-screen flex flex-col">
+
+<nav class="bg-gray-800 border-b border-gray-700">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center">
+        <a th:href="@{/CarForMe/ui}" class="font-bold text-2xl text-white tracking-wider flex items-center hover:opacity-80 transition-opacity">
+          CAR
+          <span class="bg-blue-600 text-white px-2 py-0.5 rounded-md mx-2 text-xl shadow-sm">4</span>
+          ME
+        </a>
+      </div>
+      <div class="hidden md:block">
+        <div class="ml-10 flex items-baseline space-x-4">
+          <a th:href="@{/CarForMe/ui}" class="text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Início</a>
+          <a th:href="@{/CarForMe/ui/catalog}" class="text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Catálogo</a>
+          <a th:href="@{/CarForMe/ui/register}" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Cadastrar Veículo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+
+  <div class="bg-gray-800 rounded-2xl shadow-xl border border-gray-700 overflow-hidden">
+    <div class="px-6 py-8 border-b border-gray-700 bg-gray-850">
+      <h2 class="text-3xl font-extrabold text-white" th:text="${car.id == null ? 'Cadastrar Novo Veículo' : 'Editar Veículo'}">
+        Cadastrar Veículo
+      </h2>
+      <p class="mt-2 text-sm text-gray-400">Preencha os dados abaixo para atualizar sua garagem.</p>
+    </div>
+
+    <form class="px-6 py-8 space-y-6"
+          th:action="${car.id == null ? '/CarForMe/ui/register' : '/CarForMe/ui/edit/' + car.id}"
+          th:object="${car}"
+          method="POST">
+
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-300">Modelo do Veículo</label>
+        <input type="text" id="name" th:field="*{name}" required
+               class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm placeholder-gray-500"
+               placeholder="Ex: Civic Touring">
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="brand" class="block text-sm font-medium text-gray-300">Marca</label>
+          <select id="brand" th:field="*{brand}" required
+                  class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            <option value="" disabled selected>Selecione uma marca...</option>
+            <option th:each="b : ${brands}"
+                    th:value="${b}"
+                    th:text="${b.nomeExibicao}">Marca</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="body" class="block text-sm font-medium text-gray-300">Carroceria</label>
+          <select id="body" th:field="*{body}" required
+                  class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            <option value="" disabled selected>Selecione a carroceria...</option>
+            <option th:each="b : ${bodies}"
+                    th:value="${b}"
+                    th:text="${b.nameBody}">Carroceria</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="manufactureYear" class="block text-sm font-medium text-gray-300">Ano de Fabricação</label>
+          <input type="number" id="manufactureYear" th:field="*{manufactureYear}" required min="1900" max="2100"
+                 onfocus="this.select()"
+                 class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                 placeholder="Ex: 2024">
+        </div>
+
+        <div>
+          <label for="valueCar" class="block text-sm font-medium text-gray-300">Valor (R$)</label>
+          <input type="number" step="0.01" id="valueCar" th:field="*{valueCar}" required
+                 onfocus="this.select()"
+                 class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                 placeholder="Ex: 150000.00">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="consume" class="block text-sm font-medium text-gray-300">Consumo Médio (km/l)</label>
+          <input type="number" step="0.1" id="consume" th:field="*{consume}" required
+                 onfocus="this.select()"
+                 class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                 placeholder="Ex: 12.5">
+        </div>
+
+        <div>
+          <label for="imgUrl" class="block text-sm font-medium text-gray-300">URL da Imagem</label>
+          <input type="url" id="imgUrl" th:field="*{imgUrl}"
+                 class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                 placeholder="https://exemplo.com/carro.jpg">
+        </div>
+      </div>
+
+      <div>
+        <label for="description" class="block text-sm font-medium text-gray-300">Descrição do Veículo</label>
+        <textarea id="description" th:field="*{description}" rows="4" required
+                  class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Detalhes adicionais, estado de conservação, opcionais..."></textarea>
+      </div>
+
+      <div class="pt-5 border-t border-gray-700 flex justify-end space-x-4">
+        <a th:href="@{/CarForMe/ui/catalog}" class="bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-gray-300 hover:bg-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-gray-500 transition-colors">
+          Cancelar
+        </a>
+        <button type="submit" class="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500 transition-colors">
+          Salvar Veículo
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
+</body>
+</html>

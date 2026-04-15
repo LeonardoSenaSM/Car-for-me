@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - CarForMe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans antialiased min-h-screen flex flex-col">
+
+<nav class="bg-gray-800 border-b border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center">
+                <a th:href="@{/CarForMe/ui}" class="font-bold text-2xl text-white tracking-wider flex items-center hover:opacity-80 transition-opacity">
+                    CAR
+                    <span class="bg-blue-600 text-white px-2 py-0.5 rounded-md mx-2 text-xl shadow-sm">4</span>
+                    ME
+                </a>
+            </div>
+            <div class="hidden md:block">
+                <div class="ml-10 flex items-baseline space-x-4">
+                    <a th:href="@{/CarForMe/ui}" class="text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Início</a>
+                    <a th:href="@{/CarForMe/ui/catalog}" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Catálogo</a>
+                    <a th:href="@{/CarForMe/ui/register}" class="text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Cadastrar Veículo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+
+    <div class="flex justify-between items-end mb-8">
+        <div>
+            <h2 class="text-3xl font-extrabold text-white sm:text-4xl">Sua Garagem</h2>
+            <p class="mt-2 text-sm text-gray-400">Gerencie e visualize todos os seus veículos cadastrados.</p>
+        </div>
+        <a th:href="@{/CarForMe/ui/register}" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-md text-sm font-semibold shadow transition-colors">
+            + Novo Veículo
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <div th:if="${#lists.isEmpty(cars)}" class="col-span-full text-center py-12 bg-gray-800 rounded-lg border border-gray-700">
+            <svg class="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-200">Nenhum veículo encontrado</h3>
+            <p class="mt-1 text-sm text-gray-400">Comece adicionando seu primeiro carro ao catálogo.</p>
+        </div>
+
+        <div th:each="car : ${cars}" class="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 flex flex-col transition-transform hover:-translate-y-1 hover:shadow-2xl duration-300">
+
+            <div class="h-48 bg-gray-700 w-full overflow-hidden relative">
+                <img th:src="${car.imgUrl != null and !car.imgUrl.isEmpty()} ? ${car.imgUrl} : 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=800&q=80'"
+                     th:alt="${car.name}"
+                     class="w-full h-full object-cover">
+                <span class="absolute top-3 right-3 bg-gray-900/80 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded" th:text="${car.manufactureYear}">2024</span>
+            </div>
+
+            <div class="p-5 flex-grow flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-xl font-bold text-white truncate" th:text="${car.name}">Nome do Carro</h3>
+                    <span class="bg-blue-900/50 text-blue-300 text-xs font-semibold px-2.5 py-0.5 rounded border border-blue-800" th:text="${car.brand}">MARCA</span>
+                </div>
+
+                <p class="text-sm text-gray-400 mb-4 line-clamp-2" th:text="${car.description}">Descrição curta do veículo vai aqui.</p>
+
+                <div class="mt-auto grid grid-cols-2 gap-4 text-sm">
+                    <div class="flex flex-col">
+                        <span class="text-gray-500 text-xs uppercase tracking-wider">Valor</span>
+                        <span class="font-semibold text-gray-200" th:text="|R$ ${#numbers.formatDecimal(car.valueCar, 0, 'COMMA', 2, 'POINT')}|">R$ 0,00</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-gray-500 text-xs uppercase tracking-wider">Consumo</span>
+                        <span class="font-semibold text-gray-200" th:text="|${car.consume} km/l|">0 km/l</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-750 border-t border-gray-700 px-5 py-3 flex justify-end items-center space-x-4">
+                <a th:href="@{/CarForMe/ui/details/{id}(id=${car.id})}" class="text-sm font-bold text-teal-400 hover:text-teal-300 transition-colors mr-auto">
+                    Ver Detalhes &rarr;
+                </a>
+                <a th:href="@{/CarForMe/ui/edit/{id}(id=${car.id})}" class="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors">Editar</a>
+                <a th:href="@{/CarForMe/ui/delete/{id}(id=${car.id})}" class="text-sm font-medium text-red-400 hover:text-red-300 transition-colors" onclick="return confirm('Tem certeza que deseja excluir este carro?');">Excluir</a>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

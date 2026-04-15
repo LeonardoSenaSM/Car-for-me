@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Veículo - CarForMe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans antialiased min-h-screen flex flex-col">
+
+<nav class="bg-gray-800 border-b border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center">
+                <a th:href="@{/CarForMe/ui}" class="font-bold text-2xl text-white tracking-wider flex items-center hover:opacity-80 transition-opacity">
+                    CAR
+                    <span class="bg-blue-600 text-white px-2 py-0.5 rounded-md mx-2 text-xl shadow-sm">4</span>
+                    ME
+                </a>
+            </div>
+            <div class="hidden md:block">
+                <div class="ml-10 flex items-baseline space-x-4">
+                    <a th:href="@{/CarForMe/ui}" class="text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Início</a>
+                    <a th:href="@{/CarForMe/ui/catalog}" class="text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Catálogo</a>
+                    <a th:href="@{/CarForMe/ui/register}" class="bg-gray-700 text-white hover:bg-gray-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Cadastrar Veículo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+
+    <div class="mb-6">
+        <a th:href="@{/CarForMe/ui/catalog}" class="inline-flex items-center text-sm font-medium text-gray-400 hover:text-white transition-colors">
+            <svg class="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Voltar para o Catálogo
+        </a>
+    </div>
+
+    <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 overflow-hidden flex flex-col md:flex-row">
+
+        <div class="md:w-1/2 h-72 md:h-auto bg-gray-700 relative">
+            <img th:src="${car.imgUrl != null and !car.imgUrl.isEmpty()} ? ${car.imgUrl} : 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=800&q=80'"
+                 th:alt="${car.name}"
+                 class="w-full h-full object-cover">
+        </div>
+
+        <div class="md:w-1/2 p-8 flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-start mb-6">
+                    <h1 class="text-3xl font-extrabold text-white leading-tight" th:text="${car.name}">Nome do Carro</h1>
+                    <span class="bg-blue-900/50 text-blue-300 text-sm font-bold px-3 py-1 rounded-full border border-blue-800" th:text="${car.brand.nomeExibicao}">MARCA</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-y-6 gap-x-4 mb-6">
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Carroceria</p>
+                        <p class="mt-1 text-lg text-gray-200" th:text="${car.body.nameBody}">Sedan</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Ano de Fabricação</p>
+                        <p class="mt-1 text-lg text-gray-200" th:text="${car.manufactureYear}">2024</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Consumo Médio</p>
+                        <p class="mt-1 text-lg text-gray-200" th:text="|${car.consume} km/l|">12.5 km/l</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Valor Estimado</p>
+                        <p class="mt-1 text-xl font-bold text-green-400" th:text="|R$ ${#numbers.formatDecimal(car.valueCar, 0, 'COMMA', 2, 'POINT')}|">R$ 150.000,00</p>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Descrição</p>
+                    <p class="text-gray-300 leading-relaxed" th:text="${car.description}">Detalhes adicionais sobre o veículo...</p>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-700 flex space-x-4">
+                <a th:href="@{/CarForMe/ui/edit/{id}(id=${car.id})}" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-center px-4 py-2 rounded-md font-medium transition-colors">
+                    Editar Dados
+                </a>
+                <a th:href="@{/CarForMe/ui/delete/{id}(id=${car.id})}" class="flex-1 bg-gray-700 hover:bg-red-600 text-white text-center px-4 py-2 rounded-md font-medium transition-colors" onclick="return confirm('Tem certeza que deseja excluir este veículo da garagem?');">
+                    Excluir Veículo
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
