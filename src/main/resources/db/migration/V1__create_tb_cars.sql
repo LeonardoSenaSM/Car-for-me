@@ -4,8 +4,8 @@ CREATE TABLE tb_cars(
     brand VARCHAR(100),
     body VARCHAR(100),
     manufactureYear INTEGER,
-    valuecar DOUBLE,
-    consume DOUBLE,
+    valuecar DOUBLE PRECISION,
+    consume DOUBLE PRECISION,
     description VARCHAR(255),
     imgurl VARCHAR(255)
 );
